@@ -1,10 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
+import { authClient } from "@/lib/auth-client";
+
 export const authenticationSchema = z.object({
-  name: z.string().trim().min(2, { message: "Nome é Obrigatorio" }),
   email: z
     .string()
     .trim()
@@ -18,6 +21,7 @@ export const authenticationSchema = z.object({
 });
 
 export function useAuthenticationForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof authenticationSchema>>({
     resolver: zodResolver(authenticationSchema),
     defaultValues: {
@@ -28,8 +32,21 @@ export function useAuthenticationForm() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  function onSubmit(values: z.infer<typeof authenticationSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof authenticationSchema>) {
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+        onError: () => {
+          toast.error("Email ou senha incorretos");
+        },
+      },
+    );
   }
 
   return {
