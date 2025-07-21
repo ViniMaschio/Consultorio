@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 export const authenticationSchema = z.object({
+  name: z.string().trim().min(2, { message: "Nome é Obrigatorio" }),
   email: z
     .string()
     .trim()

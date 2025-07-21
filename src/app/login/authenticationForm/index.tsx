@@ -1,5 +1,7 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -76,8 +78,16 @@ export function AuthenticationForm() {
         </CardContent>
 
         <CardFooter>
-          <Button type="submit" className="w-full">
-            Criar Conta
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Entrar"
+            )}
           </Button>
         </CardFooter>
       </form>

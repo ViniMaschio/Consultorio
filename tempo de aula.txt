@@ -1,1 +1,6 @@
-aula 2 -  0:22 mins
+aula 2 -  0:55 mins
+
+
+expensao 
+shadcn
+better auth

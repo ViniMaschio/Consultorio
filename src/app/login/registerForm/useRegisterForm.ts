@@ -1,16 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+import { authClient } from "@/lib/auth-client";
+
 const registerSchema = z.object({
   name: z.string().trim().min(2, { message: "Nome é obrigatorio" }).max(50),
-  email: z
+  emailRegister: z
     .string()
     .trim()
     .min(2, { message: "Email é obrigatorio" })
     .email({ message: "Email é Invalido" }),
-  password: z
+  passwordRegister: z
     .string()
     .trim()
     .min(6, { message: "Senha deve conter 6 letras" })
@@ -18,19 +21,31 @@ const registerSchema = z.object({
 });
 
 export function useRegisterForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
-      email: "",
-      password: "",
+      emailRegister: "",
+      passwordRegister: "",
     },
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
-  function onSubmit(values: z.infer<typeof registerSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    authClient.signUp.email(
+      {
+        email: values.emailRegister,
+        password: values.passwordRegister,
+        name: values.name,
+      },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+      },
+    );
   }
 
   return {
