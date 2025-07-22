@@ -1,10 +1,20 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { auth } from "@/lib/auth";
 
 import { AuthenticationForm } from "./authenticationForm";
 import { RegisterForm } from "./registerForm";
 
-export default function LoginPage() {
+const LoginPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (session?.user) {
+    redirect("/dashboard");
+  }
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <Tabs defaultValue="login">
@@ -27,4 +37,6 @@ export default function LoginPage() {
       </Tabs>
     </div>
   );
-}
+};
+
+export default LoginPage;

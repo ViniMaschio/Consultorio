@@ -42,8 +42,12 @@ export function useAuthenticationForm() {
         onSuccess: () => {
           router.push("/dashboard");
         },
-        onError: () => {
-          toast.error("Email ou senha incorretos");
+        onError: (ctx) => {
+          if (ctx.error.code === "USER_ALREADY_EXIST") {
+            toast.error("Email já cadastrado");
+            return;
+          }
+          toast.error("Erro ao criar conta");
         },
       },
     );
