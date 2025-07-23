@@ -5,8 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { auth } from "@/lib/auth";
 
-import { AuthenticationForm } from "./authenticationForm";
-import { RegisterForm } from "./registerForm";
+import { AuthenticationForm } from "./_components/authenticationForm";
+import { RegisterForm } from "./_components/registerForm";
 
 const LoginPage = async () => {
   const session = await auth.api.getSession({
