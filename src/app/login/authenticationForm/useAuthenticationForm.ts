@@ -53,10 +53,18 @@ export function useAuthenticationForm() {
     );
   }
 
+  async function signInSocial() {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  }
+
   return {
     form,
     showPassword,
     togglePassword: () => setShowPassword((prev) => !prev),
     onSubmit,
+    signInSocial,
   };
 }
