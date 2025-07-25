@@ -1,7 +1,8 @@
-aula 2 -  0:29 mins
+aula 2 -  1:58 mins
 
 
 expensao 
 shadcn
 better auth
 zod
+react number format

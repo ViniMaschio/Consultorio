@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -29,23 +28,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
+
+import useAppSideBar from "./useAppSideBar";
 
 export function AppSidebar() {
-  const session = authClient.useSession();
-  const router = useRouter();
-  const pathname = usePathname();
-  const signOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          {
-            router.push("/login");
-          }
-        },
-      },
-    });
-  };
+  const { session, pathname, signOut } = useAppSideBar();
   return (
     <Sidebar>
       <SidebarContent>
@@ -80,7 +67,9 @@ export function AppSidebar() {
                     <AvatarFallback>f</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm">{session.data?.user.clinic.name}</p>
+                    <p className="text-sm">
+                      {session.data?.user?.clinic?.name}
+                    </p>
                     <p className="text-muted-foreground text-sm">
                       {session.data?.user.email}
                     </p>
