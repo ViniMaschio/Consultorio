@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 import { useAction } from "next-safe-action/hooks";
@@ -32,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { doctorsTable } from "@/db/schema";
 
 import { medicalSpecialties } from "../../_constants";
 
@@ -59,24 +61,28 @@ const formSchema = z
 
 interface UpsertDoctorFormProps {
   onSuccess?: () => void;
+  doctor?: typeof doctorsTable.$inferSelect;
 }
 
-const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
+const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
+    shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      specialty: "",
-      appointmentPrice: 0,
-      availableFromWeekDay: "1",
-      availableToWeekDay: "5",
-      availableFromTime: "",
-      availableToTime: "",
+      name: doctor?.name || "",
+      specialty: doctor?.specialty || "",
+      appointmentPrice:
+        doctor?.appointmentPriceInCents !== undefined
+          ? doctor.appointmentPriceInCents / 100
+          : 0,
+      availableFromWeekDay: doctor?.availableFromWeekDay.toString() || "1",
+      availableToWeekDay: doctor?.availableToWeekDay.toString() || "5",
+      availableFromTime: doctor?.availableFromTime || "",
+      availableToTime: doctor?.availableToTime || "",
     },
   });
   const upsertDoctorAction = useAction(upsertDoctor, {
     onSuccess: () => {
-      form.reset();
       toast.success("Médico salvo com sucesso!");
       onSuccess?.();
     },
@@ -88,7 +94,7 @@ const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertDoctorAction.execute({
       ...values,
-
+      id: doctor?.id,
       availableFromWeekDay: parseInt(values.availableFromWeekDay, 10),
       availableToWeekDay: parseInt(values.availableToWeekDay, 10),
       appointmentPriceInCents: values.appointmentPrice * 100,
@@ -97,8 +103,12 @@ const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Adicionar Médico</DialogTitle>
-        <DialogDescription>Preencha os dados do médico</DialogDescription>
+        <DialogTitle>{doctor ? doctor.name : "Adicionar Médico"}</DialogTitle>
+        <DialogDescription>
+          {doctor
+            ? "Edite os dados desse médico"
+            : "Preencha os dados do médico"}
+        </DialogDescription>
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -372,17 +382,14 @@ const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
           />
           <DialogFooter>
             <Button type="submit" disabled={upsertDoctorAction.isPending}>
-              {upsertDoctorAction.isPending ? "Salvando..." : "Salvar"}
+              {upsertDoctorAction.isPending
+                ? "Salvando..."
+                : doctor
+                  ? "Salvar"
+                  : "Adicionar"}
             </Button>
             <DialogClose asChild>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  form.reset();
-                }}
-              >
-                Cancelar
-              </Button>
+              <Button variant="secondary">Cancelar</Button>
             </DialogClose>
           </DialogFooter>
         </form>
