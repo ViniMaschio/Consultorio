@@ -1,4 +1,4 @@
-aula 2 -  1:58 mins
+aula 2 -  2:22 mins
 
 
 expensao 
@@ -6,3 +6,4 @@ shadcn
 better auth
 zod
 react number format
+next safe action

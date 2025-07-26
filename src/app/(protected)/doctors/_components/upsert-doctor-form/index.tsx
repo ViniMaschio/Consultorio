@@ -1,9 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
+import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 import z from "zod";
 
+import { upsertDoctor } from "@/actions/upsert-doctor";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -54,7 +57,11 @@ const formSchema = z
     },
   );
 
-const UpsertDoctorForm = () => {
+interface UpsertDoctorFormProps {
+  onSuccess?: () => void;
+}
+
+const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,9 +74,25 @@ const UpsertDoctorForm = () => {
       availableToTime: "",
     },
   });
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // Handle form submission logic here
-    console.log("Form submitted:", data);
+  const upsertDoctorAction = useAction(upsertDoctor, {
+    onSuccess: () => {
+      form.reset();
+      toast.success("Médico salvo com sucesso!");
+      onSuccess?.();
+    },
+    onError: (erro) => {
+      toast.error("Erro ao salvar médico");
+      console.error("Erro ao salvar médico:", erro);
+    },
+  });
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    upsertDoctorAction.execute({
+      ...values,
+
+      availableFromWeekDay: parseInt(values.availableFromWeekDay, 10),
+      availableToWeekDay: parseInt(values.availableToWeekDay, 10),
+      appointmentPriceInCents: values.appointmentPrice * 100,
+    });
   };
   return (
     <DialogContent>
@@ -348,9 +371,18 @@ const UpsertDoctorForm = () => {
             )}
           />
           <DialogFooter>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit" disabled={upsertDoctorAction.isPending}>
+              {upsertDoctorAction.isPending ? "Salvando..." : "Salvar"}
+            </Button>
             <DialogClose asChild>
-              <Button variant="secondary">Cancelar</Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  form.reset();
+                }}
+              >
+                Cancelar
+              </Button>
             </DialogClose>
           </DialogFooter>
         </form>
