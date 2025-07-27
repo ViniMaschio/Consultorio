@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-import { createClinicAction } from "@/actions/create-clinic";
+import { createClinicAction } from "@/actions/clinics/create-clinic";
 
 export const formNewClinicSchema = z.object({
   name: z.string().trim().min(2, { message: "Nome é obrigatorio" }),

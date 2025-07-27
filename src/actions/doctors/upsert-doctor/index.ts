@@ -9,7 +9,7 @@ import { doctorsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 
-import { upsertDoctorSchema } from "./schema";
+import { upsertDoctorSchema } from "../schema";
 
 dayjs.extend(utc);
 
@@ -33,7 +33,6 @@ export const upsertDoctor = actionClient
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    console.log("id:", session?.user.clinic?.id);
 
     if (!session?.user) {
       throw new Error("Unauthorized");

@@ -1,5 +1,11 @@
 "use client";
-import { CalendarIcon, TrashIcon } from "lucide-react";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import {
+  MailIcon,
+  PhoneCallIcon,
+  TrashIcon,
+  VenusAndMarsIcon,
+} from "lucide-react";
 
 import {
   AlertDialog,
@@ -21,21 +27,21 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { doctorsTable } from "@/db/schema";
-import { formartCurrencyInCents } from "@/helpers/currency";
+import { patientsTable } from "@/db/schema";
 
-import UpsertDoctorForm from "../upsert-doctor-form";
-import useDoctorsCard from "./useDoctorsCard";
+import { UpsertPatientForm } from "../upsert-pacient-form";
+import usePatientCard from "./usePatientCard";
 
-interface DoctorsCardProps {
-  doctor: typeof doctorsTable.$inferSelect;
+interface PatientCardProps {
+  patient: typeof patientsTable.$inferSelect;
 }
 
-const DoctorsCard = ({ doctor }: DoctorsCardProps) => {
-  const { doctorInitials, from, to, isOpen, setIsOpen, handleDelete } =
-    useDoctorsCard({ doctor });
+const PatientCard = ({ patient }: PatientCardProps) => {
+  const { isOpen, setIsOpen, handleDelete, doctorInitials } = usePatientCard({
+    patient,
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -44,42 +50,43 @@ const DoctorsCard = ({ doctor }: DoctorsCardProps) => {
             <AvatarFallback>{doctorInitials}</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-sm font-medium">{doctor.name}</h3>
-            <p className="text-muted-foreground text-sm">{doctor.specialty}</p>
+            <h3 className="text-sm font-medium">{patient.name}</h3>
           </div>
         </div>
       </CardHeader>
       <Separator />
       <CardContent className="flex flex-col gap-2">
         <Badge variant={"outline"}>
-          <CalendarIcon className="mr-1" />
-          {from.format("dddd")} - {to.format("dddd")}
+          <MailIcon className="mr-1" />
+          {patient.email}
         </Badge>
         <Badge variant={"outline"}>
-          {from.format("HH:mm")} as {to.format("HH:mm")}
+          <PhoneCallIcon className="mr-1" />
+          {patient.phoneNumber}
         </Badge>
         <Badge variant={"outline"}>
-          {formartCurrencyInCents(doctor.appointmentPriceInCents)}
+          <VenusAndMarsIcon className="mr-1" />
+          {patient.sex}
         </Badge>
       </CardContent>
       <Separator />
       <CardFooter className="flex flex-col gap-2">
-        {doctor && (
+        {patient && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" className="w-full">
                 <TrashIcon className="mr-2" />
-                Apagar Medico
+                Apagar Paciente
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Tem certeza que deseja apagar este médico?
+                  Tem certeza que deseja apagar este paciente?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   Esta ação não pode ser desfeita. Isso apagará permanentemente
-                  o médico e todas as consultas agendadas.
+                  o paciente e todas as consultas agendadas.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -96,12 +103,8 @@ const DoctorsCard = ({ doctor }: DoctorsCardProps) => {
             <Button className="w-full">Ver Detalhes</Button>
           </DialogTrigger>
 
-          <UpsertDoctorForm
-            doctor={{
-              ...doctor,
-              availableFromTime: from.format("HH:mm:ss"),
-              availableToTime: to.format("HH:mm:ss"),
-            }}
+          <UpsertPatientForm
+            patient={patient}
             onSuccess={() => setIsOpen(false)}
           />
         </Dialog>
@@ -109,4 +112,5 @@ const DoctorsCard = ({ doctor }: DoctorsCardProps) => {
     </Card>
   );
 };
-export default DoctorsCard;
+
+export default PatientCard;
