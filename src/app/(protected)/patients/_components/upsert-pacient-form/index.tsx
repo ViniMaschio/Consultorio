@@ -30,6 +30,7 @@ import { patientsTable } from "@/db/schema";
 import { useUpsertPatientForm } from "./useUpsertPatientForm";
 
 interface UpsertPatientFormProps {
+  isOpen: boolean;
   onSuccess?: () => void;
   patient?: typeof patientsTable.$inferSelect;
 }
@@ -37,10 +38,12 @@ interface UpsertPatientFormProps {
 export const UpsertPatientForm = ({
   onSuccess,
   patient,
+  isOpen,
 }: UpsertPatientFormProps) => {
   const { form, onSubmit, upsertPatientAction } = useUpsertPatientForm({
     onSuccess,
     patient,
+    isOpen,
   });
 
   return (

@@ -36,12 +36,18 @@ import { useUpsertDoctorForm } from "./useUpsertDoctorForm";
 interface UpsertDoctorFormProps {
   onSuccess?: () => void;
   doctor?: typeof doctorsTable.$inferSelect;
+  isOpen?: boolean;
 }
 
-const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
+const UpsertDoctorForm = ({
+  onSuccess,
+  doctor,
+  isOpen,
+}: UpsertDoctorFormProps) => {
   const { form, onSubmit, upsertDoctorAction } = useUpsertDoctorForm({
     onSuccess,
     doctor,
+    isOpen,
   });
 
   return (

@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -23,12 +24,14 @@ const formSchema = z.object({
 });
 
 interface UpsertPatientFormProps {
+  isOpen: boolean;
   onSuccess?: () => void;
   patient?: typeof patientsTable.$inferSelect;
 }
 export const useUpsertPatientForm = ({
   onSuccess,
   patient,
+  isOpen,
 }: UpsertPatientFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
@@ -42,6 +45,12 @@ export const useUpsertPatientForm = ({
       clinicId: patient?.clinicId || undefined,
     },
   });
+  useEffect(() => {
+    if (isOpen) {
+      form.reset(patient);
+    }
+  }, [isOpen, patient, form]);
+
   const upsertPatientAction = useAction(upsertPatients, {
     onSuccess: () => {
       toast.success("Paciente salvo com sucesso!");
