@@ -1,39 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🏥 Consultório Médico - Sistema de Agendamento
+Este é um projeto fullstack em desenvolvimento para um sistema de agendamento de consultas, utilizando Next.js com App Router. Ele permite o gerenciamento de médicos, pacientes e agendamentos, com autenticação via Google integrada. Backend e frontend estão unificados no mesmo repositório.
 
-## Getting Started
+🧱 Tecnologias Utilizadas
 
-First, run the development server:
+- Next.js (App Router)
+- React 18
+- shadcn/ui – Componentes modernos e acessíveis
+- Better Auth – Autenticação com suporte ao login com Google
+- Zod – Validação de formulários e ações
+- React Number Format – Máscaras e formatação de números
+- next-safe-action – Comunicação segura e tipada entre client e server
+- Day.js – Manipulação de datas e horários
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🩺 Funcionalidades
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  👤 Autenticação
+  
+  - Login com Google (via Better Auth)
+  - Redirecionamento com base em roles (admin, médico, recepção)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  📋 Cadastro e gerenciamento
+  - Pacientes: CRUD completo
+  - Médicos: CRUD com horários e datas disponíveis
+  - Agendamentos: seleção de médico, horário e paciente
+  - Restrições de conflito de horários
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+💡 Usabilidade
 
-## Learn More
+- Interface responsiva e acessível com shadcn/ui
+- Formulários validados com Zod
 
-To learn more about Next.js, take a look at the following resources:
+🗓️ Agendamentos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-palavra
-A
+- Seleção de médico → horários disponíveis
+- Seleção de paciente
+- Formulário com validação e feedback
